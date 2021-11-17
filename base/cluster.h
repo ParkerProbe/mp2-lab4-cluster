@@ -26,11 +26,11 @@ private:
 	int fail_tasks;  //Число незавершенных задач
 	int complete_tasks;  //Число завершенных задач
 	int error_tasks;  //Число откланённых задач (из-за переполнения очереди)
-  int active_tasks;
+  	int active_tasks;
 	int downtime;  //такты простоя
 	int all_time;  //Все время выполнения всех задач
 	int all_tasks;  //Всего задач
-  int average_load; //сколько процессоров на кажом такте
+  	int average_load; //сколько процессоров на кажом такте
 	int free_cpu; //Свободные процессоры
 	int load_cpu;  //Загруженные процессоры
 
@@ -39,7 +39,7 @@ private:
 	int Random(int min, int max) const;
 
 public:
-  TClasster(int _tacts = 1000, int _sizequeue = 50, double _chance = 0.5, int _cpu = 4);
+  	TClasster(int _tacts = 1000, int _sizequeue = 50, double _chance = 0.5, int _cpu = 4);
 	void Start();
 	void Get_Status();
 };

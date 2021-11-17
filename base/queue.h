@@ -2,7 +2,7 @@
 #define __QUEUE_H__
 
 #include "string"
-
+#include <algorithm>
 using namespace std;
 
 const int MaxQueueSize = 100;
@@ -29,6 +29,14 @@ class TQueue
       count = 0;
       pMem = new T[size];
     }
+    TQueue(const TQueue& other)
+    {
+      pMem = new T[other.size];
+      size = other.size;
+      first = other.first;
+      last = other.last;
+      count = other.count;
+    }
 
     int GetSize() const
     {
@@ -52,6 +60,49 @@ class TQueue
     T GetLast() const
     {
       return pMem[last];
+    }
+
+    TQueue& operator=(const TQueue& other)
+    {
+      if(this == &other)
+        return *this;
+      
+      if(size != other.size) {
+        T* tmp_mem = new T[other.size];
+        delete [] pMem;
+        pMem = tmp_mem;
+        copy(other.pMem, other.pMem + other.size, pMem);
+        size = other.size;
+        first = other.count;
+        count = other.count;
+        last = other.last;
+      }
+      else {
+        copy(other.pMem, other.pMem + other.size, pMem);
+        size = other.size;
+        first = other.count;
+        count = other.count;
+        last = other.last;
+
+      }
+      return *this;
+    }
+
+    bool operator==(const TQueue& other)
+    {
+      if(this->size != other.size)
+        return false;
+      for (int i = 0; i < size; i++) {
+        if(pMem[i] != other.pMem[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    bool operator!=(const TQueue& other)
+    {
+      return !(*this == other);
     }
 
     T Pop()
