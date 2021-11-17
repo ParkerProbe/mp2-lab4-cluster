@@ -36,7 +36,49 @@ class TQueue
       first = other.first;
       last = other.last;
       count = other.count;
+      copy(other.pMem, other.pMem + other.size, pMem);
     }
+    TQueue& operator=(const TQueue& other)
+    {
+      if(this == &other)
+        return *this;
+      
+      if(size != other.size) {
+        T* tmp_mem = new T[other.size];
+        delete [] pMem;
+        pMem = tmp_mem;
+        copy(other.pMem, other.pMem + other.size, pMem);
+        size = other.size;
+        first = other.count;
+        count = other.count;
+        last = other.last;
+      }
+      else {
+        copy(other.pMem, other.pMem + other.size, pMem);
+        size = other.size;
+        first = other.count;
+        count = other.count;
+        last = other.last;
+      }
+      return *this;
+    }
+    bool operator==(const TQueue& v) const
+	  {
+	  	if (this->size != v.size)
+	  		return false;
+			for (int i = 0; i < size; i++)
+			{
+				if (this->pMem[i] != v.pMem[i])
+					return false;
+			}
+			return true;
+		}
+	  bool operator!=(const TQueue& v) const
+    { 
+      return!(*this == v); 
+    }
+
+
 
     int GetSize() const
     {
@@ -62,48 +104,9 @@ class TQueue
       return pMem[last];
     }
 
-    TQueue& operator=(const TQueue& other)
-    {
-      if(this == &other)
-        return *this;
-      
-      if(size != other.size) {
-        T* tmp_mem = new T[other.size];
-        delete [] pMem;
-        pMem = tmp_mem;
-        copy(other.pMem, other.pMem + other.size, pMem);
-        size = other.size;
-        first = other.count;
-        count = other.count;
-        last = other.last;
-      }
-      else {
-        copy(other.pMem, other.pMem + other.size, pMem);
-        size = other.size;
-        first = other.count;
-        count = other.count;
-        last = other.last;
+    
 
-      }
-      return *this;
-    }
 
-    bool operator==(const TQueue& other)
-    {
-      if(this->size != other.size)
-        return false;
-      for (int i = 0; i < size; i++) {
-        if(pMem[i] != other.pMem[i]) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    bool operator!=(const TQueue& other)
-    {
-      return !(*this == other);
-    }
 
     T Pop()
     {

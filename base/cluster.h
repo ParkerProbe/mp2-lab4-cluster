@@ -15,7 +15,7 @@ struct Task
 	int Cpu;
 };
 
-class TClasster
+class Cluster
 {
 private:
 	double chance;  //Интенсивность потока задач
@@ -39,7 +39,8 @@ private:
 	int Random(int min, int max) const;
 
 public:
-  	TClasster(int _tacts = 1000, int _sizequeue = 50, double _chance = 0.5, int _cpu = 4);
+	// _tacts - [10; 1000] ; _sizequeue - [5 , 50]; _chance - (0, 1]; _cpu - [1, 64] 
+  	Cluster(int _tacts = 1000, int _sizequeue = 50, double _chance = 0.5, int _cpu = 4);
 	void Start();
 	void Get_Status();
 };

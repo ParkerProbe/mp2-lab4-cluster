@@ -1,18 +1,18 @@
 #include "cluster.h"
 #include <iostream>
 
-TClasster::TClasster(int _tacts, int _sizequeue, double _chance, int _cpu)
+Cluster::Cluster(int _tacts, int _sizequeue, double _chance, int _cpu)
 : fail_tasks(0), complete_tasks(0), error_tasks(0), active_tasks(0), downtime(0),
 all_time(0), all_tasks(0), average_load(0)
 {
   if((_tacts > 1000) || (_tacts < 10))
     throw(string("Incorrect number of tacts"));
-  if((_cpu > 64) || (_cpu< 1))
-    throw(string("Incorrect number of tacts"));
+  if((_cpu > 64) || (_cpu < 1))
+    throw(string("Incorrect number of cpu"));
   if((_sizequeue > 50) || (_sizequeue < 5))
-    throw(string("Incorrect number of tacts"));
+    throw(string("Incorrect size of queue"));
   if((_chance > 1) || (_chance <= 0))
-    throw(string("Incorrect number of tacts"));
+    throw(string("Incorrect value of task generation chance"));
 
   all_tacts = _tacts;
   size_queue = _sizequeue;
@@ -22,7 +22,7 @@ all_time(0), all_tasks(0), average_load(0)
   load_cpu = 0;
 }
 
-int TClasster::Random(int min, int max) const
+int Cluster::Random(int min, int max) const
 {
   random_device rd;
   mt19937 engine(rd());
@@ -30,7 +30,7 @@ int TClasster::Random(int min, int max) const
   return dist(engine);
 }
 
-Task TClasster::StartNewTask()
+Task Cluster::StartNewTask()
 {
   Task task;
   task.Cpu = Random(1, all_cpu);
@@ -38,7 +38,7 @@ Task TClasster::StartNewTask()
   return task;
 }
 
-void TClasster::Get_Status()
+void Cluster::Get_Status()
 {
   average_load /= all_tacts;
   cout << "----------------[System Status]--------------------" << endl;
@@ -53,7 +53,7 @@ void TClasster::Get_Status()
 
 
 
-void TClasster::Start()
+void Cluster::Start()
 {
   TQueue<Task> queue(size_queue);
   Task temp;
@@ -99,7 +99,7 @@ void TClasster::Start()
       downtime++;
     average_load += load_cpu;
   }
-  //Coubt fail tasks
+  //Count fail tasks
   for(int j = 0; j < jobs.size(); j++) {
     if(jobs[j].Ticks != 0) {
       fail_tasks++;
