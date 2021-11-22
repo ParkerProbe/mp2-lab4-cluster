@@ -57,7 +57,6 @@ void Cluster::Get_Status()
 void Cluster::Start()
 {
   TQueue<Task> queue(size_queue);
-  vector<int> done_task;
   Task temp;
   int pid_acc = 0;
   for(int i = 0; i < all_tacts; i++) {
@@ -80,12 +79,9 @@ void Cluster::Start()
     
     //Do tasks
     if(!queue.IsEmpty()) {
+      TQueue<Task> made_tasks(queue.GetSize());
       for(Task temp = queue.GetFirst(); free_cpu || !queue.IsEmpty(); temp = queue.GetFirst()) {
-        //Check that task is not start second time on that tick
-        for(int i = 0; i < done_task.size(); i++){
-          if(done_task[i] == temp.pid)
-          continue;
-        }
+
         if(temp.ticks == 0) {
           active_tasks--;
           complete_tasks++;
@@ -97,16 +93,24 @@ void Cluster::Start()
           if(!temp.is_work) {
             active_tasks++;
             temp.is_work = true;
+            free_cpu -= temp.cpu;
+            load_cpu += temp.cpu;
           }
-          done_task.push_back(temp.pid);
-          free_cpu -= temp.cpu;
-          load_cpu += temp.cpu;
           temp.ticks--;
           queue.DecreaseFirstPriority(1);
+          made_tasks.Push(temp, queue.GetFirstPriority());
+          queue.Pop();
         }
         cout << temp.cpu << "|" << queue.GetFirstPriority() << "|" << free_cpu << "|" << active_tasks << endl;
-        queue.IncreasePriority(1);
       }
+      // Copy to queue from made_tasks
+      if (!made_tasks.IsEmpty()) {
+        for (Task temp = made_tasks.GetFirst(); made_tasks.IsEmpty(); temp = made_tasks.GetFirst()) {
+          queue.Push(temp, made_tasks.GetFirstPriority());
+          made_tasks.Pop();
+        }
+      }
+      queue.IncreasePriority(1);
     } 
     
     //Count fail tasks
