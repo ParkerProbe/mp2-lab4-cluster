@@ -1,5 +1,6 @@
 #include "cluster.h"
 #include <iostream>
+#include <vector>
 
 Cluster::Cluster(int _tacts, int _sizequeue, double _chance, int _cpu)
 : fail_tasks(0), complete_tasks(0), error_tasks(0), active_tasks(0), downtime(0),
@@ -30,11 +31,13 @@ int Cluster::Random(int min, int max) const
   return dist(engine);
 }
 
-Task Cluster::StartNewTask()
+Task Cluster::StartNewTask(int pid)
 {
   Task task;
-  task.Cpu = Random(1, all_cpu);
-  task.Ticks = Random(1, 10); //Need check
+  task.cpu = Random(1, all_cpu);
+  task.ticks = Random(1, 10); //Need check
+  task.is_work = false;
+  task.pid = pid;
   return task;
 }
 
@@ -51,46 +54,22 @@ void Cluster::Get_Status()
   cout << "Number of failed tasks:" << fail_tasks << endl;
 }
 
-
-
 void Cluster::Start()
 {
   TQueue<Task> queue(size_queue);
+  vector<int> done_task;
   Task temp;
+  int pid_acc = 0;
   for(int i = 0; i < all_tacts; i++) {
-    //Start new task
+    //Start new tasks
     if(static_cast<double>(Random(0, 10))/10 > chance) {
       if(queue.IsFull()) {
         error_tasks++;
       }
       else{
-        temp = StartNewTask();
-        queue.Push(temp);
+        queue.Push(StartNewTask(pid_acc), Random(1, 8));
+        pid_acc++;
         all_tasks++;
-      }
-    }
-
-    //Add new tasks
-    if(free_cpu) {
-      while(queue.GetFirst().Cpu <= free_cpu && !queue.IsEmpty()) {
-        active_tasks++;
-        free_cpu -= queue.GetFirst().Cpu;
-        load_cpu += queue.GetFirst().Cpu;
-        jobs.push_back(queue.Pop());
-      }
-    }
-
-    //Do tasks
-    for(int j = 0; j < jobs.size(); j++) {
-      if(jobs[j].Ticks != 0) {
-        jobs[j].Ticks--;
-      }
-      else {
-        free_cpu += jobs[j].Cpu;
-        load_cpu -= jobs[j].Cpu;
-        active_tasks--;
-        complete_tasks++;
-        jobs.erase(jobs.begin() + j);
       }
     }
 
@@ -98,12 +77,39 @@ void Cluster::Start()
     if (load_cpu == 0)
       downtime++;
     average_load += load_cpu;
-  }
-  //Count fail tasks
-  for(int j = 0; j < jobs.size(); j++) {
-    if(jobs[j].Ticks != 0) {
-      fail_tasks++;
-    }
+    
+    //Do tasks
+    if(!queue.IsEmpty()) {
+      for(Task temp = queue.GetFirst(); free_cpu || !queue.IsEmpty(); temp = queue.GetFirst()) {
+        //Check that task is not start second time on that tick
+        for(int i = 0; i < done_task.size(); i++){
+          if(done_task[i] == temp.pid)
+          continue;
+        }
+        if(temp.ticks == 0) {
+          active_tasks--;
+          complete_tasks++;
+          free_cpu += temp.cpu;
+          load_cpu -= temp.cpu;
+          queue.Pop();
+        }
+        if(temp.cpu <= free_cpu) {
+          if(!temp.is_work) {
+            active_tasks++;
+            temp.is_work = true;
+          }
+          done_task.push_back(temp.pid);
+          free_cpu -= temp.cpu;
+          load_cpu += temp.cpu;
+          temp.ticks--;
+          queue.DecreaseFirstPriority(1);
+        }
+        cout << temp.cpu << "|" << queue.GetFirstPriority() << "|" << free_cpu << "|" << active_tasks << endl;
+        queue.IncreasePriority(1);
+      }
+    } 
+    
+    //Count fail tasks
+    fail_tasks = queue.GetSize();
   }
 }
-

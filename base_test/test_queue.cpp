@@ -18,18 +18,18 @@ TEST(TQueue, can_return_first_elem_of_queue)
 {
   TQueue<int> tmp(5);
   for (int i = 0; i < 5; i++)
-    tmp.Push(i);
+    tmp.Push(i, 2);
   EXPECT_EQ(0, tmp.GetFirst());
 }
 TEST(TQueue, can_put_elem_in_queue)
 {
   TQueue<int> tmp(1);
-  ASSERT_NO_THROW(tmp.Push(10));
+  ASSERT_NO_THROW(tmp.Push(10, 2));
 }
 TEST(TQueue, can_get_elem_from_queue)
 {
   TQueue<int> tmp(1);
-  tmp.Push(10);
+  tmp.Push(10, 1);
   EXPECT_EQ(10, tmp.GetFirst());
 }
 TEST(TQueue, can_check_queue_for_empty)
@@ -41,20 +41,20 @@ TEST(TQueue, can_check_queue_for_full)
 {
   TQueue<int> st(5);
   while (!st.IsFull())
-	st.Push(5);
+	st.Push(5, 1);
   EXPECT_TRUE(st.IsFull());
 }
 TEST(TQueue, can_create_copied_queue)
 {
   TQueue<int> st1(5);
-  st1.Push(5);
+  st1.Push(5,1 );
   TQueue<int> st2(st1);
   EXPECT_EQ(st1, st2);
 }
 TEST(TQueue, two_queues_are_not_equal)
 {
   TQueue<int> st1(5), st2(5);
-  st1.Push(5);
+  st1.Push(5, 1);
   EXPECT_NE(st1, st2);
 }
 TEST(TQueue, assign_operator_change_queue_size)
@@ -67,7 +67,7 @@ TEST(TQueue, assign_operator_change_queue_first)
 {
   TQueue<int> st1(5), st2(10);
   while (!st1.IsFull())
-	st1.Push(5);
+	st1.Push(5, 1);
   st2 = st1;
   EXPECT_NE(-1, st2.GetFirst());
 }
@@ -75,7 +75,7 @@ TEST(TQueue, assign_operator_change_queue_last)
 {
   TQueue<int> st1(5), st2(10);
   while (!st1.IsFull())
-	st1.Push(5);
+	st1.Push(5, 1);
   st2 = st1;
   EXPECT_NE(1, st2.GetLast());
 }
