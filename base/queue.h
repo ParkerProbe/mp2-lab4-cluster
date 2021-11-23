@@ -77,19 +77,20 @@ class TQueue
     }
     bool operator==(const TQueue& v) const
 	  {
-	  	if (this->size != v.size)
-	  		return false;
-			for (int i = 0; i < size; i++) {
-				if (this->pMem[i].obj != v.pMem[i].obj) {
-					return false;
+      if (this->size != v.size)
+        return false;
+      for (int i = 0; i < size; i++) {
+        if (this->pMem[i].obj != v.pMem[i].obj) {
+          return false;
         }
-				if (this->pMem[i].priority != v.pMem[i].priority) {
+        if (this->pMem[i].priority != v.pMem[i].priority) {
           return false;
         }
       }
-			return true;
-		}
-	  bool operator!=(const TQueue& v) const
+      return true;
+    }
+	  
+    bool operator!=(const TQueue& v) const
     { 
       return!(*this == v); 
     }
