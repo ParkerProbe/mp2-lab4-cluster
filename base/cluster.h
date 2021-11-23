@@ -21,6 +21,9 @@ struct Task
 class Cluster
 {
 private:
+  const int cnst_max_task_len = 10; 
+  const int cnst_max_task_cnt = 4;
+
   double chance;  //Интенсивность потока задач
   int all_tacts;  //Количество тактов
   int all_cpu;  //Всего процессоров
@@ -28,7 +31,6 @@ private:
   int fail_tasks;  //Число незавершенных задач
   int complete_tasks;  //Число завершенных задач
   int error_tasks;  //Число откланённых задач (из-за переполнения очереди)
-  int active_tasks;
   int downtime;  //такты простоя
   int all_time;  //Все время выполнения всех задач
   int all_tasks;  //Всего задач

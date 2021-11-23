@@ -104,6 +104,11 @@ class TQueue
       return count == size;
     }
 
+    int GetCount() const
+    {
+      return count;
+    }
+
     bool IsEmpty() const
     {
       return !count;
@@ -119,9 +124,9 @@ class TQueue
       return pMem[last].obj;
     }
     
-    double GetFirstPriority() const
+    int GetFirstPriority() const
     {
-      return pMem[first].priority;
+      return pMem[(first+1) % size].priority;
     }
     
     void DecreaseFirstPriority(int _priority)
@@ -139,7 +144,7 @@ class TQueue
       return pMem[first].obj;
     }
 
-    void Push(T item, double _priority)
+    void Push(T item, int _priority)
     {
       if(IsFull())
         throw(string("Queue is full"));
