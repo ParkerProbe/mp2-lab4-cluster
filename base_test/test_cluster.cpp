@@ -1,5 +1,4 @@
 #include "cluster.h"
-#include "cluster.cpp"
 #include "gtest.h"
 
 TEST(Cluster, can_create_cluster)
