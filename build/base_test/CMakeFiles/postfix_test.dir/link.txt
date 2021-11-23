@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/postfix_test.dir/test_main.cpp.o CMakeFiles/postfix_test.dir/test_queue.cpp.o -o postfix_test  ../gtest/libgtest.a -pthread 

@@ -109,9 +109,9 @@ void Cluster::Start()
       }
       queue.IncreasePriority(1);
       made_tasks.clear();
-    } 
-    
-    //Count fail tasks
-    fail_tasks = queue.GetSize();
+    }   
   }
+  
+  //Count fail tasks
+  fail_tasks = queue.GetSize();
 }
