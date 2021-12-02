@@ -114,7 +114,6 @@ void Cluster::Start()
       while (!queue.IsEmpty()) {
         temp.priority = queue.GetFirstPriority();
         temp.task = queue.Pop();
-        cout << temp.priority << endl;
         if(temp.task.ticks == 0) {
           active_tasks--;
           complete_tasks++;
