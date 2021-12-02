@@ -13,7 +13,6 @@ struct Task
 {
   int pid;
   bool is_work;
-
   int ticks;
   int cpu;
 };
@@ -21,8 +20,23 @@ struct Task
 class Cluster
 {
 private:
-  const int cnst_max_task_len = 10; 
-  const int cnst_max_task_cnt = 4;
+  // Max count of tacts that task can take
+  const int kmax_task_len = 10;
+  
+  // Max count of tasks generated on every tact
+  const int kmax_task_cnt = 4;
+
+  // Limits
+  const int kmin_tacts = 10;
+  const int kmax_tacts = 1000;
+  const int kmin_size_queue = 5;
+  const int kmax_size_queue = 50;
+  const double klimit_chance = 0.0;
+  const double kmax_chance = 1.0;
+  const int kmin_cpu = 1;
+  const int kmax_cpu = 64;
+
+
 
   double chance;  //Интенсивность потока задач
   int all_tacts;  //Количество тактов
@@ -42,7 +56,6 @@ private:
   int Random(int min, int max) const;
 
 public:
-  // _tacts - [10; 1000] ; _sizequeue - [5 , 50]; _chance - (0, 1]; _cpu - [1, 64] 
   Cluster(int _tacts = 1000, int _sizequeue = 50, double _chance = 0.5, int _cpu = 4);
   void Start();
   void Get_Status();

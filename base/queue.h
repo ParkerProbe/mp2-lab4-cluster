@@ -25,7 +25,7 @@ class TQueue
 
       bool operator<(const Item& other)
       { 
-        return priority < other.priority;
+        return priority > other.priority;
       }
     };
     Item* pMem;
